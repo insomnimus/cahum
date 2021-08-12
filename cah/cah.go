@@ -1,5 +1,7 @@
 package cah
 
+type Decks map[string]Deck
+
 type Deck struct {
 	Name     string  `json:"name"`
 	White    []White `json:"white"`
@@ -7,18 +9,17 @@ type Deck struct {
 	Official bool    `json:"official"`
 }
 
-type White struct {
+type Card struct {
 	Text string `json:"text"`
 	ID   uint32 `json:"id"`
-	// Pack int    `json:"pack"`
+	Pack int    `json:"pack"`
 }
 
-type Black struct {
-	Text string `json:"text"`
-	ID   uint32 `json:"id"`
+type White Card
 
-	// Pick int    `json:"pick"`
-	// Pack int    `json:"pack"`
+type Black struct {
+	Card
+	Pick int `json:"pick"`
 }
 
 type Player struct {
