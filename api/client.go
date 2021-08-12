@@ -32,7 +32,7 @@ var upgrader = websocket.Upgrader{
 type Client struct {
 	game   *Game
 	con    *websocket.Conn
-	player *cah.Player
+	player cah.Player
 
 	// for sending messages to the player
 	send chan []byte
@@ -63,7 +63,7 @@ func (c *Client) readPump() {
 		}
 
 		// Generate an event based on the message.
-		_ = c.parseMessage(msg)
+		_, _ = c.parseMessage(msg)
 		// TODO: Do stuff based on the event.
 	}
 }
@@ -130,6 +130,6 @@ func ServeWs(game *Game, w http.ResponseWriter, r *http.Request) {
 	go client.readPump()
 }
 
-func (c *Client) parseMessage(msg []byte) *Event {
+func (c *Client) parseMessage(msg []byte) (*Event, error) {
 	panic("unimplemented")
 }

@@ -1,4 +1,10 @@
 package api
 
-// TODO: Define the game events.
-type Event struct{}
+import (
+	"github.com/insomnimus/cahum/api/event"
+)
+
+type Event struct {
+	source *Client
+	event.Event
+}
