@@ -4,13 +4,12 @@ import (
 	"github.com/insomnimus/cahum/cah"
 )
 
-type EventType uint8
+type EventType string
 
 const (
-	_ EventType = iota
-	PlayCard
-	StartGame
-	Vote
+	PlayCard  EventType = "play"
+	StartGame EventType = "start"
+	Vote      EventType = "vote"
 )
 
 type Event struct {

@@ -8,13 +8,16 @@ import (
 type Game struct {
 	clients []*Client
 	deck    cah.Deck
-	turn    uint32
 
 	// Incoming events such as a player playing a card.
-	events     chan Event
+	events chan Event
+
+	// Clients are registered by sending them through this channel.
+	/// The channel is closed once the game begins.
 	register   chan *Client
 	unregister chan *Client
-	// a message to this channel will start the game if at least 2 players are ready
+	// A message to this channel will start the game if at least 2 players are ready
+	// and the source of the message is the lobby owner (clients[0]).
 	start chan bool
 }
 
@@ -29,6 +32,8 @@ func NewGame(c *Client) *Game {
 	}
 }
 
+// `run` starts the lobby, registering players until the start
+// message is received.
 func (g *Game) Run() {
 	idCounter := uint32(1) // There's one player already.
 	// register clients until the start message is received
