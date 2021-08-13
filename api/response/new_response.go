@@ -134,7 +134,7 @@ func StartVoting(played map[*cah.Player]*cah.White) []byte {
 		})
 	}
 
-	data, err := json.Marshal(startVoting{Played: vec})
+	data, err := json.Marshal(startVoting{Type: mtStartVoting, Played: vec})
 	if err != nil {
 		panic(err)
 	}

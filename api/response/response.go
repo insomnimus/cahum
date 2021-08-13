@@ -32,6 +32,7 @@ const (
 	mtPlayerLeft
 	mtPlayerPlayedCard
 	mtPlayerVoted
+	mtStartVoting
 	mtNewRound
 	mtGameOver
 )
@@ -71,5 +72,6 @@ type playedInfo struct {
 }
 
 type startVoting struct {
+	Type   messageType  `json:"type"`
 	Played []playedInfo `json:"played"`
 }
