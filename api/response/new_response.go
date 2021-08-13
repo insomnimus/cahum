@@ -1,19 +1,3 @@
-/*
-The response package defines functions and types
-for generating messages that will be sent from
-the server to a client.
-
-Since the communication is one way, the only exported
-items of this package are the functions.
-
-Every function in this package returns
-a JSON encoded representation of a message as []byte.
-
-Since the input to this package is trusted (comes from the server itself)
-any errors that may arise from marshaling JSON are
-considered a bug and will cause a panic.
-*/
-
 package response
 
 import (
@@ -135,4 +119,25 @@ func GameOver() []byte {
 	return []byte(
 		fmt.Sprintf(`{"type":%d}`, mtError),
 	)
+}
+
+// StartVoting creates a new `StartVoting` message and returns the json encoded bytes.
+//
+// The `played` argument is a map of `cah.Player` to `*cah.White` for convenience.
+func StartVoting(played map[*cah.Player]*cah.White) []byte {
+	vec := make([]playedInfo, 0, len(played))
+
+	for p, c := range played {
+		vec = append(vec, playedInfo{
+			player: player{ID: p.ID, Name: p.Name},
+			Card:   *c,
+		})
+	}
+
+	data, err := json.Marshal(startVoting{Played: vec})
+	if err != nil {
+		panic(err)
+	}
+
+	return data
 }

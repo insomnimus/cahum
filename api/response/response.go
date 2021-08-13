@@ -1,3 +1,19 @@
+/*
+The response package defines functions and types
+for generating messages that will be sent from
+the server to a client.
+
+Since the communication is one way, the only exported
+items of this package are the functions.
+
+Every function in this package returns
+a JSON encoded representation of a message as []byte.
+
+Since the input to this package is trusted (comes from the server itself)
+any errors that may arise from marshaling JSON are
+considered a bug and will cause a panic.
+*/
+
 package response
 
 import (
@@ -47,4 +63,13 @@ type playerVoted struct {
 	Type     messageType `json:"type"`
 	Player   player      `json:"player"`
 	VotedFor player      `json:"voted_for"`
+}
+
+type playedInfo struct {
+	player
+	Card cah.White `json:"card"`
+}
+
+type startVoting struct {
+	Played []playedInfo `json:"played"`
 }

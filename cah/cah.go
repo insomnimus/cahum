@@ -29,11 +29,16 @@ type Player struct {
 	ID    uint32  `json:"id"`
 }
 
-func (p *Player) RemoveCard(id uint32) {
+// RemoveCard removes a card if it exists in the players hand.
+//
+// Returns false if the card doesn't exist.
+func (p *Player) RemoveCard(id uint32) (cardExists bool) {
 	for i, c := range p.Cards {
 		if c.ID == id {
 			p.Cards = append(p.Cards[:i], p.Cards[i+1:]...)
-			return
+			return true
 		}
 	}
+
+	return false
 }

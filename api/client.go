@@ -1,9 +1,13 @@
 package api
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/insomnimus/cahum/api/event"
+	"github.com/insomnimus/cahum/api/response"
 
 	"github.com/gorilla/websocket"
 
@@ -21,7 +25,7 @@ const (
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 512
+	maxMessageSize = 1024
 )
 
 var upgrader = websocket.Upgrader{
@@ -36,8 +40,6 @@ type Client struct {
 
 	// for sending messages to the player
 	send chan []byte
-	// true if the client is the owner of the game
-	isOwner bool
 }
 
 func (c *Client) readPump() {
@@ -63,8 +65,12 @@ func (c *Client) readPump() {
 		}
 
 		// Generate an event based on the message.
-		_, _ = c.parseMessage(msg)
-		// TODO: Do stuff based on the event.
+		e, err := c.parseMessage(msg)
+		if err != nil {
+			c.send <- response.Error("invalid data")
+			continue
+		}
+		c.game.events <- *e
 	}
 }
 
@@ -131,5 +137,10 @@ func ServeWs(game *Game, w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Client) parseMessage(msg []byte) (*Event, error) {
-	panic("unimplemented")
+	var e event.Event
+	err := json.Unmarshal(msg, &e)
+	if err != nil {
+		return nil, err
+	}
+	return &Event{c, e}, nil
 }
