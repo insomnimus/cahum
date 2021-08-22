@@ -109,3 +109,9 @@ func (g *Game) broadcastExcept(client *Client, msg []byte) {
 		}
 	}
 }
+
+func (g *Game) updateScores(votes map[*cah.Player]*cah.Player) {
+	for _, p := range votes {
+		p.Score += 5
+	}
+}

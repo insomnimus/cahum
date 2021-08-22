@@ -68,18 +68,13 @@ func (g *Game) begin() {
 	}
 
 	// Game loop.
-	for {
-		if len(g.deck.Black) == 0 {
-			g.broadcast(response.GameOver())
-			return
-		}
-
+	for len(g.deck.Black) > 0 {
 		for p := range played {
 			played[p] = nil
 			voted[p] = nil
 		}
 
-		// Deal cards every 10 turns.
+		// Deal cards every 5 turns.
 		if turn > 0 && turn%5 == 0 {
 			if outOfCards := g.dealCards(5); outOfCards {
 				g.broadcast(response.GameOver())
@@ -179,6 +174,9 @@ func (g *Game) begin() {
 		}
 
 		// Everyone voted; calculate scores.
-		// TODO: Do the above.
+		g.updateScores(voted)
 	}
+
+	// Game over.
+	g.broadcast(response.GameOver())
 }
