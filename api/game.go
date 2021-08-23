@@ -5,6 +5,9 @@ import (
 	"github.com/insomnimus/cahum/cah"
 )
 
+// Game represents a game lobby.
+//
+// Every game event is handled by it.
 type Game struct {
 	clients []*Client
 	deck    cah.Deck
@@ -110,6 +113,9 @@ func (g *Game) broadcastExcept(client *Client, msg []byte) {
 	}
 }
 
+// updateScores updates the playres' scores.
+//
+// It takes `map[*cah.Player]*cah.Player` for convenience, only the values are used.
 func (g *Game) updateScores(votes map[*cah.Player]*cah.Player) {
 	for _, p := range votes {
 		p.Score += 5

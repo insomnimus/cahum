@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/insomnimus/cahum/api/event"
@@ -42,6 +41,7 @@ type Client struct {
 	send chan []byte
 }
 
+// readPump reads messages from the client, sending the appropriate event to the game.
 func (c *Client) readPump() {
 	defer func() {
 		c.game.unregister <- c
@@ -74,6 +74,7 @@ func (c *Client) readPump() {
 	}
 }
 
+// writePump continuously sends generated messages to the client.
 func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
@@ -115,25 +116,6 @@ func (c *Client) writePump() {
 			}
 		}
 	}
-}
-
-func ServeWs(game *Game, w http.ResponseWriter, r *http.Request) {
-	con, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	client := &Client{
-		game: game,
-		con:  con,
-		send: make(chan []byte, 256),
-	}
-	client.game.register <- client
-
-	// Allow collection of memory referenced by the caller by doing all work in
-	// new goroutines.
-	go client.writePump()
-	go client.readPump()
 }
 
 func (c *Client) parseMessage(msg []byte) (*Event, error) {
